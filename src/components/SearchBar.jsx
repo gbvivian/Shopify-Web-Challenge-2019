@@ -15,7 +15,7 @@ class SearchBar extends Component {
 					<input
 						className="Search-bar mr-3 from-control"
 						type="text"
-						placeholder="Search for something"
+						placeholder="Search proper disposal"
 						value={this.state.userInput}
 						onChange={this.handleChange}
 					/>

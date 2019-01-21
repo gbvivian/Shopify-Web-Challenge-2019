@@ -25,6 +25,11 @@ input[type=checkbox] {
 	flex: 1;
 }
 
+input:focus,
+textarea:focus {
+	outline: none;
+}
+
 .Search-bar {
 	width: 100%;
 	padding: 10px 10px;
