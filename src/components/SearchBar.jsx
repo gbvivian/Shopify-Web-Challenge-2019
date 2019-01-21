@@ -20,7 +20,7 @@ class SearchBar extends Component {
 						onChange={this.handleChange}
 					/>
 					<span className="input-group-append">
-						<button className="btn btn-outline-success" type="submit">
+						<button className="btn btn-success" type="submit">
 							<i className="fa fa-search fa-flip-horizontal" />
 						</button>
 					</span>
