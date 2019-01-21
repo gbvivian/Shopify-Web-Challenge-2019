@@ -7,26 +7,21 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isLoading: true,
-			// filteredItems: [{ [title: ___, desc: ____, keywords: ___, isFavourited: ____]
 			filteredItems: [],
-			// favourites: [{[title: ___, desc: ____, isFavourited: ____]}],
 			favourites: []
 		};
-
-		this.getData();
+		this.getTorontoWasteData();
 	}
 
-	getData = () => {
+	getTorontoWasteData = () => {
 		return fetch('https://secure.toronto.ca/cc_sr_v1/data/swm_waste_wizard_APR?limit=1000').then((response) => {
 			return response.json();
 		});
 	};
 
 	handleSearch = (input) => {
-		this.getData().then((itemList) => {
+		this.getTorontoWasteData().then((itemList) => {
 			var filteredItemList = itemList.filter((item) => item.keywords.includes(input));
-
 			filteredItemList = filteredItemList.map((item) => {
 				return {
 					...item,
@@ -34,14 +29,6 @@ class App extends Component {
 				};
 			});
 			this.setState({ filteredItems: filteredItemList });
-
-			// for every item, initialize title, body, keywords, and initialize isFavourited to be the appropriate state
-			// check if item is in Favourites list, if it is, set isFavourited to true. otherwise, false.
-
-			// FOR TESTING
-			// console.log('input is ' + input);
-			// console.log('itemList[0] keywords are: ' + itemList[0].keywords);
-			// console.log(this.containsKeyword(input, itemList[0].keywords));
 		});
 	};
 
@@ -54,28 +41,12 @@ class App extends Component {
 		return false;
 	};
 
-	// NEW CONTAINS KEYWORD
-	// split the keywords string into an array of keywords
-	// if, within the item's keywords, we find the INPUT, we say yes!
 	containsKeyword = (input, keywords) => {
 		var splitKeywordsArr = keywords.split(', ');
-		// console.log(splitKeywordsArr.includes(input));
 		return splitKeywordsArr.includes(input);
-		/*
-		for (let keyword of splitKeywordsArr) {
-			if (input === keyword) {
-				return true;
-			}
-		}
-		return false;
-		*/
 	};
 
-	// TODO: Fix this function
 	handleFavourite = (checkedState, item) => {
-		console.log('handleFavourite called');
-		console.log(checkedState);
-		console.log(item);
 		if (checkedState) {
 			this.addToFavourites(item);
 		} else {
@@ -96,9 +67,6 @@ class App extends Component {
 		});
 	};
 
-	// given an item, remove it from the favourites list
-	// it will be guaranteed that it is on the favourite list
-	// (ok to assume that the checked state is checked)
 	removeFromFavourites = (item) => {
 		var newItemList = this.state.filteredItems;
 		for (let newItem of newItemList) {
@@ -108,30 +76,17 @@ class App extends Component {
 		}
 		this.setState({
 			favourites: this.state.favourites.filter((favouritedItem) => favouritedItem.title !== item.title),
-			filteredItemList: newItemList
+			filteredItems: newItemList
 		});
 	};
 
-	// TO ADD
+	clearFilteredItems = () => {
+		this.setState({ filteredItems: [] });
+	};
 
 	render() {
-		return (
-			<div className="App">
-				<header className="App-header">Toronto Waste Lookup</header>
-
-				<SearchBar onSearch={this.handleSearch} />
-				{/* THIS SECTION WORKS */}
-				{/* <input type="checkbox" id="c1" name="cc" />
-				<label for="c1">
-					<span>Check Box 1</span>
-				</label> */}
-
-				{/* EXPERIMENTAL SECTION */}
-				{/* <input type="checkbox" id="c1" name="cc" />
-				<label for="c1">
-					<span>Check Box 1</span>
-				</label> */}
-
+		var filteredSection = (
+			<div className="mt-5 mx-3">
 				{this.state.filteredItems.map((item, index) => {
 					return (
 						<Item
@@ -142,9 +97,14 @@ class App extends Component {
 							handleFavourite={this.handleFavourite}
 						/>
 					);
-					// return <Item key={index} itemName={item.title} itemDesc={this.htmlParser(item.body)} />;
 				})}
-				<div>Favourites</div>
+			</div>
+		);
+
+		// Only render the favourites section if there are items in there.
+		var favouritesSection = this.state.favourites.length > 0 && (
+			<div className="mt-5 px-3 favourites-container">
+				<h1 className="favourites-title">Favourites</h1>
 				{this.state.favourites.map((item, index) => {
 					return (
 						<Item
@@ -158,33 +118,18 @@ class App extends Component {
 				})}
 			</div>
 		);
+
+		return (
+			<div>
+				<header className="App-header">Toronto Waste Lookup</header>
+				<div className="mt-3 mx-3">
+					<SearchBar onSearch={this.handleSearch} onEmptyInput={this.clearFilteredItems} />
+				</div>
+				{filteredSection}
+				{favouritesSection}
+			</div>
+		);
 	}
 }
-
-// TODO: uncomment
-// function Item(props) {
-// 	return (
-// 		<div className="Item">
-// 			<Star onChange={this.props.handleChange} />
-// 			{/* <input type="checkbox" onChange={props.handleChange} /> */}
-
-// 			<div className="item1">{props.itemName}</div>
-// 			<div className="desc">{props.itemDesc}</div>
-// 		</div>
-// 	);
-// }
-
-// https://stackoverflow.com/questions/3700326/decode-amp-back-to-in-javascript
-// https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
-
-// STUFF
-// your ugly string
-// var html =
-// 	'&lt;ul&gt; \n &lt;li&gt;Place item in the &lt;strong&gt;Garbage Bin.&lt;/strong&gt;&lt;/li&gt; \n&lt;/ul&gt;';
-
-// // put your ugly string but then not sure what 'text/html' does
-// var doc = new DOMParser().parseFromString(html, 'text/html');
-// // LOL ya copy pasta this?
-// document.getElementById('c').innerHTML = doc.body.innerText;
 
 export default App;

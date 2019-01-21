@@ -4,7 +4,6 @@ import Star from './Star';
 class Item extends Component {
 	constructor(props) {
 		super(props);
-		console.log(props);
 	}
 
 	setFavouriteState = (favState) => {
@@ -22,13 +21,15 @@ class Item extends Component {
 
 	render() {
 		return (
-			<div className="Item">
-				<Star isFavourited={this.props.isFavourited} onClickHandler={this.setFavouriteState} />
-				{/* TODO: CAN PROBABLY DELETE LINE BELOW */}
-				{/* <input type="checkbox" onChange={this.props.handleChange} /> */}
-
-				<div className="item1">{this.props.itemName}</div>
-				<div className="desc" dangerouslySetInnerHTML={{ __html: this.decodeHTML(this.props.itemDesc) }} />
+			<div className="d-flex flex-row bd-highlight">
+				<div className="p-2 bd-highlight">
+					<Star isFavourited={this.props.isFavourited} onClickHandler={this.setFavouriteState} />
+				</div>
+				<div className="item-title p-2 bd-highlight">{this.props.itemName}</div>
+				<div
+					className="item-desc p-2 bd-highlight"
+					dangerouslySetInnerHTML={{ __html: this.decodeHTML(this.props.itemDesc) }}
+				/>
 			</div>
 		);
 	}

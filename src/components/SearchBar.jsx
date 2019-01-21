@@ -2,24 +2,28 @@ import React, { Component } from 'react';
 
 class SearchBar extends Component {
 	constructor(props) {
-		super();
+		super(props);
 		this.state = {
-			userInput: 'rope'
+			userInput: 'straw'
 		};
 	}
 
 	render() {
 		return (
 			<React.Fragment>
-				<form onSubmit={this.handleSubmit}>
+				<form className="d-flex bd-highlight" onSubmit={this.handleSubmit}>
 					<input
-						className="Search-bar"
+						className="Search-bar mr-3 from-control"
 						type="text"
 						placeholder="Search for something"
 						value={this.state.userInput}
 						onChange={this.handleChange}
 					/>
-					<input type="submit" />
+					<span className="input-group-append">
+						<button className="btn btn-outline-success" type="submit">
+							<i className="fa fa-search fa-flip-horizontal" />
+						</button>
+					</span>
 				</form>
 			</React.Fragment>
 		);
@@ -34,6 +38,9 @@ class SearchBar extends Component {
 		this.setState({
 			userInput: event.target.value
 		});
+		if (event.target.value === '') {
+			this.props.onEmptyInput();
+		}
 	};
 }
 
