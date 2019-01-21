@@ -20,6 +20,9 @@ class App extends Component {
 	};
 
 	handleSearch = (input) => {
+		if (input === '') {
+			return;
+		}
 		this.getTorontoWasteData().then((itemList) => {
 			var filteredItemList = itemList.filter((item) => item.keywords.includes(input));
 			filteredItemList = filteredItemList.map((item) => {
